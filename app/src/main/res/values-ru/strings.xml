@@ -4,4 +4,14 @@
     <string name="cityName">Город</string>
     <string name="zelenograd">Зеленоград</string>
     <string name="temperature">Температура</string>
+    <string name="choice_your_city">Выберите город</string>
+    <string name="enter_city_name">Введите название города</string>
+    <string name="add_city">Добавить</string>
+
+    <string-array name="cities">
+        <item>Зеленоград</item>
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Рославль</item>
+    </string-array>
 </resources>

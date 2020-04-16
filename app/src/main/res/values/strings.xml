@@ -4,4 +4,14 @@
     <string name="zelenograd">Zelenograd</string>
     <string name="tempValue" translatable="false">-1 °C</string>
     <string name="temperature">Temperature</string>
+    <string name="choice_your_city">Choice your city</string>
+    <string name="enter_city_name">Enter city name</string>
+    <string name="add_city">Add city</string>
+
+    <string-array name="cities">
+        <item>Zelenograd</item>
+        <item>Moscow</item>
+        <item>Saint-Petersburg</item>
+        <item>Roslavl</item>
+    </string-array>
 </resources>
