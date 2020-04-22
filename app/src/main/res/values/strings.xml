@@ -7,6 +7,10 @@
     <string name="choice_your_city">Choice your city</string>
     <string name="enter_city_name">Enter city name</string>
     <string name="add_city">Add city</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="pressure">Pressure</string>
+    <string name="windSpeed_text">6 m/s</string>
+    <string name="pressure_text">925 gPa</string>
 
     <string-array name="cities">
         <item>Zelenograd</item>

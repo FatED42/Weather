@@ -7,6 +7,10 @@
     <string name="choice_your_city">Выберите город</string>
     <string name="enter_city_name">Введите название города</string>
     <string name="add_city">Добавить</string>
+    <string name="wind_speed">Скорость ветра</string>
+    <string name="pressure">Давление</string>
+    <string name="windSpeed_text">6 м/с</string>
+    <string name="pressure_text">925 гПа</string>
 
     <string-array name="cities">
         <item>Зеленоград</item>
