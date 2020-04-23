@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".WeatherActivity">
 
     <TextView
         android:id="@+id/city"
@@ -97,7 +97,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/windSpeed_textView"
+        android:id="@+id/speed_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="112dp"
@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/pressure_CB"
-        app:layout_constraintTop_toBottomOf="@+id/windSpeed_textView"
+        app:layout_constraintTop_toBottomOf="@+id/speed_textView"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.Barrier

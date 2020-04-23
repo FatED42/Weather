@@ -11,6 +11,8 @@
     <string name="pressure">Pressure</string>
     <string name="windSpeed_text">6 m/s</string>
     <string name="pressure_text">925 gPa</string>
+    <string name="show_weather">Show weather</string>
+    <string name="random_fact">Random fact</string>
 
     <string-array name="cities">
         <item>Zelenograd</item>

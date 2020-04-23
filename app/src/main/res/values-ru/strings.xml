@@ -11,6 +11,8 @@
     <string name="pressure">Давление</string>
     <string name="windSpeed_text">6 м/с</string>
     <string name="pressure_text">925 гПа</string>
+    <string name="show_weather">Показать</string>
+    <string name="random_fact">Случайный факт</string>
 
     <string-array name="cities">
         <item>Зеленоград</item>
