@@ -1,23 +1,19 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="cityName">City</string>
-    <string name="zelenograd">Zelenograd</string>
     <string name="tempValue" translatable="false">-1 °C</string>
     <string name="temperature">Temperature</string>
-    <string name="choice_your_city">Choice your city</string>
-    <string name="enter_city_name">Enter city name</string>
-    <string name="add_city">Add city</string>
-    <string name="wind_speed">Wind speed</string>
-    <string name="pressure">Pressure</string>
-    <string name="windSpeed_text">6 m/s</string>
-    <string name="pressure_text">925 gPa</string>
-    <string name="show_weather">Show weather</string>
-    <string name="random_fact">Random fact</string>
-
-    <string-array name="cities">
-        <item>Zelenograd</item>
-        <item>Moscow</item>
-        <item>Saint-Petersburg</item>
-        <item>Roslavl</item>
-    </string-array>
+    <string name="updating">Updating the weather…</string>
+    <string name="settings_screen_waiting">Settings screen during development</string>
+    <string name="empty_list">Empty List</string>
+    <string name="update_weather">Update weather</string>
+    <string name="settings">Settings</string>
+    <string name="wiki_info">Wiki info</string>
+    <string name="degrees_celsius" translatable="false">°</string>
+    <string name="feels_like">Feels like</string>
+    <string name="humidity">Humidity</string>
+    <string name="overcast">Overcast</string>
+    <string name="open_weather_map_app_id" translatable="false">9183dfc6bd65045b1399c8c9decdf3af</string>
+    <string name="city_not_found">City not found</string>
+    <string name="choose_city">Choose city</string>
+    <string name="cityName" />
 </resources>
