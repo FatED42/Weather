@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Погода</string>
-    <string name="cityName">Город</string>
-    <string name="zelenograd">Зеленоград</string>
     <string name="temperature">Температура</string>
-    <string name="choice_your_city">Выберите город</string>
-    <string name="enter_city_name">Введите название города</string>
-    <string name="add_city">Добавить</string>
-    <string name="wind_speed">Скорость ветра</string>
-    <string name="pressure">Давление</string>
-    <string name="windSpeed_text">6 м/с</string>
-    <string name="pressure_text">925 гПа</string>
-    <string name="show_weather">Показать</string>
-    <string name="random_fact">Случайный факт</string>
-
-    <string-array name="cities">
-        <item>Зеленоград</item>
-        <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Рославль</item>
-    </string-array>
+    <string name="updating">Обновляем погоду…</string>
+    <string name="settings_screen_waiting">Экран настроек в процессе разработки</string>
+    <string name="empty_list">Пустой список</string>
+    <string name="update_weather">Обновить погоду</string>
+    <string name="settings">Настройки</string>
+    <string name="wiki_info">Инфо на вики</string>
+    <string name="feels_like">Ощущается как</string>
+    <string name="humidity">Влажност</string>
+    <string name="overcast">Облачность</string>
+    <string name="city_not_found">Город не найден</string>
+    <string name="choose_city">Выберите город</string>
+    <string name="cityName" />
 </resources>

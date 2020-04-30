@@ -1,78 +1,117 @@
 package com.example.weather;
 
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
+
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Spinner;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
-    final static String KEY_TO_DATA = "KEY_TO_DATA";
-    private final static String CITY_STATE = "cityState";
-    private static final String WIND_STATE = "wind state";
-    private static final String PRESSURE_STATE = "pressure state";
-    private CheckBox wind_checkBox;
-    private CheckBox pressure_checkBox;
-    Spinner cities_spinner;
-    Button show_weather_btn;
+    private Toolbar toolbar;
+    CitiesFragment citiesFragment;
+    WeatherFragment weatherFragment;
+    FragmentManager fragmentManager;
+
+    public static final String WEATHER_FRAGMENT_KEY = "WEATHER_FRAGMENT",
+                                CITIES_FRAGMENT_KEY = "CITIES_FRAGMENT";
+
+    private String cityName = "Zelenograd";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cities_choise);
+        setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
 
-        initViews();
+        setToolbar();
 
+        if (savedInstanceState == null) {
+            addWeatherFragment();
+            citiesFragment = CitiesFragment.newInstance();
+        }
+        else {
+            weatherFragment = (WeatherFragment) getSupportFragmentManager()
+                    .findFragmentByTag(WEATHER_FRAGMENT_KEY);
+            citiesFragment = (CitiesFragment) getSupportFragmentManager()
+                    .findFragmentByTag(CITIES_FRAGMENT_KEY);
+        }
+    }
+
+    private void addWeatherFragment() {
+        weatherFragment = WeatherFragment.newInstance();
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.add(R.id.fragment_container, weatherFragment, WEATHER_FRAGMENT_KEY).commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setToolbar() {
+        this.setSupportActionBar(toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!citiesFragment.isVisible()) {
+                    replaceFragment(citiesFragment, CITIES_FRAGMENT_KEY);
+                }
+                else {
+                    replaceFragment(weatherFragment, WEATHER_FRAGMENT_KEY);
+                }
+            }
+        });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.menu_main_update) {
+                    Toast.makeText(MainActivity.this, getString(R.string.updating),
+                            Toast.LENGTH_SHORT).show();
+                    weatherFragment.updateWeather();
+                }
+                else if (item.getItemId() == R.id.menu_main_settings) {
+                    Toast.makeText(MainActivity.this, getString(R.string.settings_screen_waiting),
+                            Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void replaceFragment(Fragment fragment, String KEY) {
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fragment_container, fragment, KEY).commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        savedInstanceState.putString("key1", cityName);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        cityName = savedInstanceState.getString("key1");
         super.onRestoreInstanceState(savedInstanceState);
-        cities_spinner.setSelection(savedInstanceState.getInt(CITY_STATE));
-        wind_checkBox.setChecked(savedInstanceState.getBoolean(WIND_STATE));
-        pressure_checkBox.setChecked(savedInstanceState.getBoolean(PRESSURE_STATE));
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(CITY_STATE,cities_spinner.getSelectedItemPosition());
-        outState.putBoolean(WIND_STATE, wind_checkBox.isChecked());
-        outState.putBoolean(PRESSURE_STATE, pressure_checkBox.isChecked());
-    }
-
-    private void initViews() {
-        cities_spinner = findViewById(R.id.cities_spinner);
-        wind_checkBox = findViewById(R.id.windSpeed_CB);
-        pressure_checkBox = findViewById(R.id.pressure_CB);
-        show_weather_btn = findViewById(R.id.showWeather_btn);
-
-        ArrayAdapter<CharSequence> citiesAdapter = ArrayAdapter.createFromResource(
-                this,R.array.cities, R.layout.spinner_layout);
-        citiesAdapter.setDropDownViewResource(R.layout.spinner_layout);
-        cities_spinner.setAdapter(citiesAdapter);
-
-        show_weather_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,WeatherActivity.class);
-                ActivityInfo activityInfo =intent.resolveActivityInfo(getPackageManager(),
-                        intent.getFlags());
-                if (activityInfo != null) {
-                    Parcel parcel = new Parcel();
-                    parcel.city = cities_spinner.getSelectedItem().toString();
-                    parcel.windSpeed = wind_checkBox.isChecked();
-                    parcel.pressure = pressure_checkBox.isChecked();
-                    intent.putExtra(KEY_TO_DATA,parcel);
-                    startActivity(intent);
-                }
-            }
-        });
     }
 }
