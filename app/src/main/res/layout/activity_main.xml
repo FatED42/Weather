@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".WeatherActivity">
 
     <TextView
         android:id="@+id/city"
@@ -59,72 +59,77 @@
         app:layout_constraintTop_toBottomOf="@+id/cityName"
         app:layout_constraintVertical_bias="0.0" />
 
-    <CheckBox
-        android:id="@+id/windSpeed_CB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="100dp"
-        android:text="@string/wind_speed"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempValue" />
-
-    <CheckBox
-        android:id="@+id/pressure_CB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/pressure"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/windSpeed_CB"
-        app:layout_constraintVertical_bias="0.0" />
-
     <TextView
-        android:id="@+id/windSpeed_textView"
+        android:id="@+id/speed_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="84dp"
         android:text="@string/windSpeed_text"
         android:textSize="16sp"
         android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@id/windSpeed_CB"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/windSpeed_textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/windSpeed_CB"
-        app:layout_constraintTop_toBottomOf="@+id/tempValue"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/windSpeed_textView"
+        app:layout_constraintTop_toBottomOf="@+id/tempValue" />
 
     <TextView
         android:id="@+id/pressure_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="68dp"
+        android:layout_marginBottom="228dp"
         android:text="@string/pressure_text"
         android:textSize="16sp"
         android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@id/pressure_CB"
+        app:layout_constraintBaseline_toBaselineOf="@id/pressure_tv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/pressure_CB"
-        app:layout_constraintTop_toBottomOf="@+id/windSpeed_textView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/pressure_tv"
+        app:layout_constraintTop_toBottomOf="@+id/speed_textView"
+        app:layout_constraintVertical_bias="0.666" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top" />
+
+    <TextView
+        android:id="@+id/pressure_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginBottom="229dp"
+        android:text="@string/pressure"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/windSpeed_textView" />
+
+    <TextView
+        android:id="@+id/windSpeed_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/wind_speed"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tempValue" />
+
+    <Button
+        android:id="@+id/random_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        android:text="@string/random_fact"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
