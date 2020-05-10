@@ -16,4 +16,15 @@
     <string name="city_not_found">City not found</string>
     <string name="choose_city">Choose city</string>
     <string name="cityName" />
+    <string name="remove">remove</string>
+    <string name="add">add</string>
+    <string name="enter_city_name">Enter city name</string>
+    <string name="city_img">City image</string>
+    <string name="moscow">Moscow</string>
+    <string name="go_back">Go back</string>
+    <string name="change_city_button">Change city</string>
+    <string name="weather_last_week">Weather last week</string>
+    <string name="spb"> Saint-Petersburg</string>
+    <string name="zelenograd"> Zelenograd</string>
+    <string name="roslavl">Roslavl</string>
 </resources>
