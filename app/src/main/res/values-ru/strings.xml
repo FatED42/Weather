@@ -25,4 +25,15 @@
     <string name="spb">Санкт-Петербург</string>
     <string name="zelenograd">Зеленоград</string>
     <string name="roslavl">Рославль</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="delete_city">Удалить город</string>
+    <string name="pressure">Давление: </string>
+    <string name="wind">Ветер: </string>
+    <string name="city_added">Город добавлен</string>
+    <string name="cancel">Отмена</string>
+    <string name="do_you_want_delete_city">Удалить город?</string>
+    <string name="yes">Да</string>
+    <string name="last_update">Последнее обновление: </string>
+    <string name="mmHg">мм рт. ст.</string>
+    <string name="ms">м/с</string>
 </resources>

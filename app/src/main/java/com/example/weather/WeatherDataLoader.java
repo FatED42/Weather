@@ -15,13 +15,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WeatherDataLoader {
     private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric";
+            "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=ru";
     private static final String KEY = "x-api-key";
     private static final String RESPONSE = "cod";
     private static final String NEW_LINE = "\n";
     private static final int ALL_GOOD = 200;
 
-    static JSONObject getJSONData(Context context, String city) {
+    public static JSONObject getJSONData(Context context, String city) {
         try {
             URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

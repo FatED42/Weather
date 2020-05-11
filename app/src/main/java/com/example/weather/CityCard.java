@@ -1,17 +1,22 @@
 package com.example.weather;
 
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 public class CityCard implements Parcelable {
     private int position;
-    Drawable drawable;
-    String text;
+    private String text;
 
-    CityCard(Drawable drawable, String text) {
-        this.drawable = drawable;
+    public CityCard(String text) {
         this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 
     private CityCard(Parcel in) {
@@ -41,4 +46,21 @@ public class CityCard implements Parcelable {
             return new CityCard[size];
         }
     };
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CityCard cityCard = (CityCard) obj;
+        return this.text.equalsIgnoreCase(cityCard.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text);
+    }
 }
