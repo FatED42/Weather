@@ -48,8 +48,7 @@ public class WeatherFragment extends Fragment {
     private static final String LOG_TAG = "WeatherFragment";
     private NestedScrollView nestedScrollView;
 
-    public WeatherFragment() {
-    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -76,7 +75,7 @@ public class WeatherFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }

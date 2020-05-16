@@ -95,8 +95,7 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
     private void showWeather(String cityName) {
         if (isTempScreenExists) {
             WeatherFragment detail = (WeatherFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.temp_screen);
-            assert detail != null;
-            if (!detail.getCityName().equals(cityName)) {
+            if (detail == null || !detail.getCityName().equals(cityName)) {
                 detail = WeatherFragment.newInstance(cityName);
                 FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.temp_screen, detail);
