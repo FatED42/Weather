@@ -14,4 +14,15 @@
     <string name="city_not_found">Город не найден</string>
     <string name="choose_city">Выберите город</string>
     <string name="cityName" />
+    <string name="remove">Удалить</string>
+    <string name="add">Добавить</string>
+    <string name="enter_city_name">Введите название города</string>
+    <string name="city_img">Изображение города</string>
+    <string name="moscow">Москва</string>
+    <string name="go_back">Назад</string>
+    <string name="change_city_button">Выберите город</string>
+    <string name="weather_last_week">Погода на прошлой неделе</string>
+    <string name="spb">Санкт-Петербург</string>
+    <string name="zelenograd">Зеленоград</string>
+    <string name="roslavl">Рославль</string>
 </resources>
