@@ -1,4 +1,18 @@
 <resources>
+    <!-- Weather icons -->
+    <string name="weather_sunny" translatable="false">&#xf00d;</string>
+    <string name="weather_clear_night" translatable="false">&#xf02e;</string>
+    <string name="weather_foggy" translatable="false">&#xf014;</string>
+    <string name="weather_cloudy" translatable="false">&#xf013;</string>
+    <string name="weather_rainy" translatable="false">&#xf019;</string>
+    <string name="weather_snowy" translatable="false">&#xf01b;</string>
+    <string name="weather_thunder" translatable="false">&#xf01e;</string>
+    <string name="weather_drizzle" translatable="false">&#xf01c;</string>
+    <!-- Symbols -->
+    <string name="celsius" translatable="false">&#8451;</string>
+    <string name="fahrenheit" translatable="false">&#8457;</string>
+    <string name="percent" translatable="false">&#37;</string>
+    <!-- Other -->
     <string name="app_name">Weather</string>
     <string name="tempValue" translatable="false">-1 °C</string>
     <string name="temperature">Temperature</string>
@@ -24,7 +38,7 @@
     <string name="go_back">Go back</string>
     <string name="change_city_button">Change city</string>
     <string name="weather_last_week">Weather last week</string>
-    <string name="spb"> Saint-Petersburg</string>
+    <string name="spb"> Saint Petersburg</string>
     <string name="zelenograd"> Zelenograd</string>
     <string name="roslavl">Roslavl</string>
     <string name="dark_theme">Dark theme</string>
@@ -38,18 +52,18 @@
     <string name="last_update">Last update: </string>
     <string name="mmHg">mm Hg</string>
     <string name="ms">m/s</string>
-    <!-- Weather icons -->
-    <string name="weather_sunny" translatable="false">&#xf00d;</string>
-    <string name="weather_clear_night" translatable="false">&#xf02e;</string>
-    <string name="weather_foggy" translatable="false">&#xf014;</string>
-    <string name="weather_cloudy" translatable="false">&#xf013;</string>
-    <string name="weather_rainy" translatable="false">&#xf019;</string>
-    <string name="weather_snowy" translatable="false">&#xf01b;</string>
-    <string name="weather_thunder" translatable="false">&#xf01e;</string>
-    <string name="weather_drizzle" translatable="false">&#xf01c;</string>
-    <!-- Symbols -->
-    <string name="celsius" translatable="false">&#8451;</string>
-    <string name="fahrenheit" translatable="false">&#8457;</string>
-    <string name="percent" translatable="false">&#37;</string>
     <string name="city_is_already_in_list">is already in list!</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="add_city">Add city</string>
+    <string name="hPa">hPa</string>
+    <string name="made_by">made by: Alexander Zaytsev</string>
+    <string name="github" translatable="false">github</string>
+    <string name="github_repository">GitHub repository</string>
+    <string name="send_me_email">Send me email</string>
+    <string name="degree_word">"Degree: "</string>
+    <string name="app_logo">App logo</string>
+    <string name="cities_list">Cities list</string>
+    <string name="communicate">Communicate</string>
+    <string name="about">About developer</string>
+
 </resources>

@@ -52,4 +52,28 @@ public class CityPreference {
         }
         else return array;
     }
+
+    public void setThemeCheckBox(boolean isChecked) {
+        userPreference.edit().putBoolean("THEME", isChecked).apply();
+    }
+
+    public Boolean getThemeCheckBox() {
+        return userPreference.getBoolean("THEME", false);
+    }
+
+    public void setUnits(String units) {
+        userPreference.edit().putString("UNITS", units).apply();
+    }
+
+    public String getUnits() {
+        return userPreference.getString("UNITS", "metric");
+    }
+
+    public void setPressure(int pressure){
+        userPreference.edit().putInt("PRESSURE", pressure).apply();
+    }
+
+    public int getPressure(){
+        return userPreference.getInt("PRESSURE", 0);
+    }
 }

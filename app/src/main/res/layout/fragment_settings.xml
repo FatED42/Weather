@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.SettingsFragment"
+    android:orientation="vertical">
+
+    <CheckedTextView
+        android:id="@+id/Dark_theme_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dark_theme"
+        android:textSize="14sp"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:gravity="center"
+        android:padding="16dp"
+        />
+
+    <RadioGroup
+        android:id="@+id/radGrpDegree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:checkedButton="@id/radBtnCelsius"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/degree_word"
+            android:background="?attr/highlight_color"
+            android:textSize="14sp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:padding="8dp"
+            android:drawableStart="@drawable/hot"
+            android:drawablePadding="8dp"
+            />
+
+
+        <RadioButton
+            android:id="@+id/radBtnCelsius"
+            android:text="@string/celsius"
+            android:gravity="center|end"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginStart="16dp"
+            style="@style/rightRadioButton"/>
+
+        <RadioButton
+            android:id="@+id/radBtnFahrenheit"
+            android:text="@string/fahrenheit"
+            android:gravity="center|end"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginStart="16dp"
+            style="@style/rightRadioButton"/>
+    </RadioGroup>
+
+
+    <RadioGroup
+        android:id="@+id/radGrpPressure"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:checkedButton="@id/radBtnMmHg">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pressure"
+            android:paddingTop="8dp"
+            android:background="?attr/highlight_color"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:drawableStart="@drawable/meter"
+            android:drawablePadding="8dp"/>
+
+
+        <RadioButton
+            android:id="@+id/radBtnHPa"
+            android:text="@string/hPa"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginStart="16dp"
+            style="@style/rightRadioButton"/>
+
+        <RadioButton
+            android:id="@+id/radBtnMmHg"
+            android:text="@string/mmHg"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginStart="16dp"
+            style="@style/rightRadioButton"/>
+    </RadioGroup>
+</LinearLayout>

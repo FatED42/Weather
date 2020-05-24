@@ -6,5 +6,7 @@
         <attr name="background_color" format="color"/>
         <attr name="card_color" format="color"/>
         <attr name="text_color" format="color"/>
+        <attr name="highlight_color" format="color"/>
+        <attr name="themeName" format="string"/>
     </declare-styleable>
 </resources>
