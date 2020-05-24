@@ -1,4 +1,4 @@
-package com.example.weather;
+package com.example.weather.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -6,7 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WeatherActivity extends AppCompatActivity {
+import com.example.weather.R;
+import com.example.weather.fragments.WeatherFragment;
+
+public class WeatherActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -15,6 +18,7 @@ public class WeatherActivity extends AppCompatActivity {
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             finish();
+            return;
         }
 
         if (savedInstanceState == null) {

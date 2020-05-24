@@ -5,54 +5,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="8dp"
+    card_view:cardCornerRadius="4dp"
     card_view:cardElevation="8dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginTop="8dp">
+    android:layout_marginTop="8dp"
+    card_view:cardBackgroundColor="?attr/card_color"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageViewOnCard"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="fitXY"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/city_img"/>
-
         <TextView
             android:id="@+id/cityTextViewOnCard"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_height="0dp"
-            tools:text="@string/moscow"
-            android:textSize="24sp"
-            android:layout_marginStart="8dp"
-            card_view:layout_constraintTop_toTopOf="@id/tempTextViewOnCard"
-            card_view:layout_constraintBottom_toBottomOf="@id/tempTextViewOnCard"
-            card_view:layout_constraintEnd_toStartOf="@id/tempTextViewOnCard"
-            card_view:layout_constraintStart_toStartOf="@id/imageViewOnCard"
-            android:textColor="@color/colorBackground"
-            android:background="#CC212121"
+            android:padding="8dp"
+            tools:text="@string/spb"
+            android:textSize="20sp"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/colorPrimary"
             />
 
-        <TextView
-            android:id="@+id/tempTextViewOnCard"
-            tools:text="+7*C"
-            android:textSize="32sp"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/delete_city_btn"
             android:layout_width="wrap_content"
-            android:layout_margin="8dp"
-            card_view:layout_constraintEnd_toEndOf="@id/imageViewOnCard"
-            card_view:layout_constraintBottom_toBottomOf="@id/imageViewOnCard"
-            android:background="@color/colorBackground"
-            />
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cancel_black_24dp"
+            android:background="@android:color/transparent"
+            card_view:layout_constraintEnd_toEndOf="@id/cityTextViewOnCard"
+            card_view:layout_constraintTop_toTopOf="@id/cityTextViewOnCard"
+            card_view:layout_constraintBottom_toBottomOf="@id/cityTextViewOnCard"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/delete_city" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
