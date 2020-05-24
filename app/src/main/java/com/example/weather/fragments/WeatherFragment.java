@@ -46,7 +46,6 @@ public class WeatherFragment extends Fragment {
 
     private final Handler handler = new Handler();
     private static final String LOG_TAG = "WeatherFragment";
-    private NestedScrollView nestedScrollView;
 
 
 
@@ -89,10 +88,6 @@ public class WeatherFragment extends Fragment {
         showBackButton();
         onBackArrowBtnClicked();
         onUpdateBtnClicked();
-
-        if (nestedScrollView.getParent() != null) {
-            nestedScrollView.getParent().requestChildFocus(nestedScrollView,nestedScrollView);
-        }
     }
 
     private void initViews(View view) {
@@ -110,7 +105,6 @@ public class WeatherFragment extends Fragment {
         cityTextView = view.findViewById(R.id.cityTextView);
         updateBtn = view.findViewById(R.id.toWikiBtn);
         todayDateTextView = view.findViewById(R.id.todayDate);
-        nestedScrollView = view.findViewById(R.id.ScrollView);
         backArrowBtn = view.findViewById(R.id.back_arrow);
         weatherIconTextView = view.findViewById(R.id.weatherIcon);
     }
@@ -172,15 +166,15 @@ public class WeatherFragment extends Fragment {
 
     private void updateWeather() {
         if (getArguments() != null) {
-            updateWeatherData(getArguments().getString("index"));
+            updateWeatherData(getArguments().getString("index"), "metric");
         }
     }
 
-    private void updateWeatherData(final String cityName) {
+    private void updateWeatherData(final String cityName, final String units) {
         new Thread() {
             public void run() {
                 final JSONObject json = WeatherDataLoader.
-                        getJSONData(requireActivity(), cityName);
+                        getJSONData(requireActivity(), cityName, units, Locale.getDefault().getCountry());
                 if (json == null) {
                     handler.post(new Runnable() {
                         @Override

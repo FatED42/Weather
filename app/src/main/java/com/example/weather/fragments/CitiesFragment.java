@@ -21,9 +21,11 @@ import com.example.weather.activity.WeatherActivity;
 import com.example.weather.adapters.CitiesListRecyclerViewAdapter;
 import com.example.weather.callBackInterfaces.IAdapterCallbacks;
 import com.example.weather.callBackInterfaces.IAddCityCallback;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddCityCallback {
 
@@ -33,7 +35,6 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
     private String cityName;
     private ArrayList<CityCard> list;
     private CityPreference cityPreference;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +46,8 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        initList(savedInstanceState);
+        cityPreference = new CityPreference(requireActivity());
+        initList();
     }
 
     @Override
@@ -55,15 +57,13 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
         cityPreference = new CityPreference(requireActivity());
         cityName = cityPreference.getCity();
-        if (isTempScreenExists) {
-            showWeather(cityName);
-        }
+        showWeather(cityName);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("City", cityName);
-        outState.putParcelableArrayList("list", list);
+        outState.putString("city", cityName);
+        cityPreference.setList(list);
         super.onSaveInstanceState(outState);
     }
 
@@ -71,20 +71,8 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
         recyclerView = view.findViewById(R.id.recyclerView);
     }
 
-    private void initList(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            CityCard[] data = new CityCard[] {
-                    new CityCard(getString(R.string.moscow)),
-                    new CityCard(getString(R.string.spb)),
-                    new CityCard(getString(R.string.zelenograd)),
-                    new CityCard(getString(R.string.roslavl))
-            };
-            list = new ArrayList<>(data.length);
-            list.addAll(Arrays.asList(data));
-        }
-        else {
-            list = savedInstanceState.getParcelableArrayList("list");
-        }
+    private void initList() {
+        list =cityPreference.getList();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         adapter = new CitiesListRecyclerViewAdapter(list, this);
         recyclerView.setLayoutManager(layoutManager);
@@ -120,14 +108,27 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, IAddC
 
     @Override
     public boolean addCityToList(String city) {
-        if (!city.isEmpty() && !adapter.checkIsItemInData(city)) {
+        if(city.isEmpty()) {
+            return false;
+        }
+        else if (adapter.checkIsItemInData(city)) {
+            Snackbar.make(recyclerView, city + " " + getString(R.string.city_is_already_in_list), Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+        else {
             city = city.substring(0, 1).toUpperCase() + city.substring(1);
             CityCard cityCard = new CityCard(city);
             adapter.addItem(cityCard);
             recyclerView.scrollToPosition(0);
+            Snackbar.make(recyclerView, R.string.city_added, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.cancel, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            deleteCityFromList();
+                        }
+                    }).show();
             return true;
         }
-        return false;
     }
 
     @Override

@@ -36,4 +36,5 @@
     <string name="last_update">Последнее обновление: </string>
     <string name="mmHg">мм рт. ст.</string>
     <string name="ms">м/с</string>
+    <string name="city_is_already_in_list">is already in list!</string>
 </resources>

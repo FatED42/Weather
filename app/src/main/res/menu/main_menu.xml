@@ -14,4 +14,11 @@
                 />
         </menu>
     </item>
+    <item
+        android:id="@+id/add_city_btn"
+        android:title="@string/add"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"/>
+
 </menu>

@@ -3,10 +3,12 @@ package com.example.weather.activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.weather.R;
+import com.example.weather.WeatherDataLoader;
 import com.example.weather.callBackInterfaces.IAddCityCallback;
 import com.example.weather.fragments.CitiesFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,11 +24,15 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONObject;
+
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends BaseActivity {
 
     IAddCityCallback addCityCallback;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,20 +40,9 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setFloatingBtn();
     }
 
-    private void setFloatingBtn() {
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showInputDialog(v);
-            }
-        });
-    }
-
-    private void showInputDialog(final View view) {
+    private void showInputDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.choose_city);
         final TextInputLayout layout = new TextInputLayout(this);
@@ -61,15 +57,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 addCityCallback = (CitiesFragment) getSupportFragmentManager().findFragmentById(R.id.cities);
                 String city = Objects.requireNonNull(Objects.requireNonNull(editText.getText()).toString());
-                if (Objects.requireNonNull(addCityCallback).addCityToList(city)) {
-                    Snackbar.make(view, R.string.city_added, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.cancel, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    addCityCallback.deleteCityFromList();
-                                }
-                            }).show();
-                }
+                updateWeatherData(city, "metric");
             }
         });
 
@@ -106,6 +94,33 @@ public class MainActivity extends BaseActivity {
             recreate();
             return true;
         }
+        if (id == R.id.add_city_btn) {
+            showInputDialog();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeatherData(final String city, final String units) {
+        if (!city.isEmpty()) {
+            new Thread() {
+                public void run() {
+                    final JSONObject json = WeatherDataLoader.getJSONData(Objects.requireNonNull(getApplicationContext()), city, units, Locale.getDefault().getCountry());
+                    if (json == null) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), getString(R.string.city_not_found),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Objects.requireNonNull(addCityCallback).addCityToList(city);
+                        }
+                    });
+                }
+            }.start();
+        }
     }
 }
