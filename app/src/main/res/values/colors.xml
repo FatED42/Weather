@@ -7,4 +7,6 @@
     <color name="colorBackgroundDark">#212121</color>
     <color name="colorGrey">#424242</color>
     <color name="colorLightGrey">#313131</color>
+    <color name="color_highlight">#efe5fd</color>
+    <color name="color_highlight_dark">#424242</color>
 </resources>

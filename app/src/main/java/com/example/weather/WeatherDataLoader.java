@@ -11,19 +11,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
-
 public class WeatherDataLoader {
     private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=ru";
+            "http://api.openweathermap.org/data/2.5/weather?q=%s&units=%s&lang=%s";
     private static final String KEY = "x-api-key";
     private static final String RESPONSE = "cod";
     private static final String NEW_LINE = "\n";
     private static final int ALL_GOOD = 200;
 
-    public static JSONObject getJSONData(Context context, String city) {
+    public static JSONObject getJSONData(Context context, String city, String units, String language) {
         try {
-            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city));
+            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city, units, language));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty(KEY, context.getString(R.string.open_weather_map_app_id));
 

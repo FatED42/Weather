@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -34,9 +33,9 @@ public class WeatherFragment extends Fragment {
                     cityTextView, todayDateTextView, pressureTextView, windTextView,
                     weatherIconTextView, tempMaxTextView, tempMinTextView, tempFeelsLikeTextView;
     private ImageButton backArrowBtn, updateBtn;
-    private int humidityValue, pressureValue, windValue;
+    private int humidityValue, pressureValue, windValue, pressure;
     private double tempTodayValue, tempFeelsLikeValue, tempMaxValue, tempMinValue;
-    private String cityName, overcastValue, country, updateOn, icon;
+    private String cityName, overcastValue, country, updateOn, icon, units;
     private final String HUMIDITY_VALUE_KEY = "HUMIDITY_VALUE_KEY",
             OVERCAST_VALUE_KEY = "OVERCAST_VALUE_KEY", TEMP_TODAY_KEY = "TEMP_TODAY_KEY",
             CITY_NAME_KEY = "CITY_NAME_KEY", COUNTRY_KEY = "COUNTRY_KEY",
@@ -46,7 +45,6 @@ public class WeatherFragment extends Fragment {
 
     private final Handler handler = new Handler();
     private static final String LOG_TAG = "WeatherFragment";
-    private NestedScrollView nestedScrollView;
 
 
 
@@ -89,10 +87,6 @@ public class WeatherFragment extends Fragment {
         showBackButton();
         onBackArrowBtnClicked();
         onUpdateBtnClicked();
-
-        if (nestedScrollView.getParent() != null) {
-            nestedScrollView.getParent().requestChildFocus(nestedScrollView,nestedScrollView);
-        }
     }
 
     private void initViews(View view) {
@@ -110,7 +104,6 @@ public class WeatherFragment extends Fragment {
         cityTextView = view.findViewById(R.id.cityTextView);
         updateBtn = view.findViewById(R.id.toWikiBtn);
         todayDateTextView = view.findViewById(R.id.todayDate);
-        nestedScrollView = view.findViewById(R.id.ScrollView);
         backArrowBtn = view.findViewById(R.id.back_arrow);
         weatherIconTextView = view.findViewById(R.id.weatherIcon);
     }
@@ -138,6 +131,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void setValues() {
+        String degree = chooseDegree();
         //city + country
         String cityText = cityName + ", " + country;
         cityTextView.setText(cityText);
@@ -145,16 +139,16 @@ public class WeatherFragment extends Fragment {
         String updatedText = getString(R.string.last_update) + " " + updateOn;
         todayDateTextView.setText(updatedText);
         //temp today
-        String tempTodayString = String.valueOf(Math.round(tempTodayValue)).concat(getString(R.string.celsius));
+        String tempTodayString = String.valueOf(Math.round(tempTodayValue)).concat(degree);
         tempTodayTextView.setText(tempTodayString);
         //temp feels like
-        String tempFeelsLikeString = getString(R.string.feels_like) + " " + Math.round(tempFeelsLikeValue) + getString(R.string.celsius);
+        String tempFeelsLikeString = getString(R.string.feels_like) + " " + Math.round(tempFeelsLikeValue) + degree;
         tempFeelsLikeTextView.setText(tempFeelsLikeString);
         // temp min
-        String tempMinString = "Min: " + String.valueOf(tempMinValue).concat(getString(R.string.celsius));
+        String tempMinString = "Min: " + String.valueOf(tempMinValue).concat(degree);
         tempMinTextView.setText(tempMinString);
         //temp max
-        String tempMaxString = "Max: " + String.valueOf(tempMaxValue).concat(getString(R.string.celsius));
+        String tempMaxString = "Max: " + String.valueOf(tempMaxValue).concat(degree);
         tempMaxTextView.setText(tempMaxString);
         //Descriptions
         //overcast
@@ -162,8 +156,7 @@ public class WeatherFragment extends Fragment {
         //humidity
         humidityTextView.setText(String.valueOf(humidityValue).concat("%"));
         //pressure
-        String pressureMmHg = String.valueOf(Math.round(pressureValue / 1.33322387415)).concat(getString(R.string.mmHg));
-        pressureTextView.setText(pressureMmHg);
+        pressureTextView.setText(choosePressure());
         //wind
         windTextView.setText(String.valueOf(windValue).concat(getString(R.string.ms)));
         //icon
@@ -172,15 +165,17 @@ public class WeatherFragment extends Fragment {
 
     private void updateWeather() {
         if (getArguments() != null) {
-            updateWeatherData(getArguments().getString("index"));
+            units = getArguments().getString("units");
+            pressure = getArguments().getInt("pressure");
+            updateWeatherData(getArguments().getString("index"), units);
         }
     }
 
-    private void updateWeatherData(final String cityName) {
+    private void updateWeatherData(final String cityName, final String units) {
         new Thread() {
             public void run() {
                 final JSONObject json = WeatherDataLoader.
-                        getJSONData(requireActivity(), cityName);
+                        getJSONData(requireActivity(), cityName, units, Locale.getDefault().getCountry());
                 if (json == null) {
                     handler.post(new Runnable() {
                         @Override
@@ -238,10 +233,12 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    static WeatherFragment newInstance(String cityName) {
+    static WeatherFragment newInstance(String cityName, String units, int pressure) {
         Bundle args = new Bundle();
         WeatherFragment fragment = new WeatherFragment();
         args.putString("index", cityName);
+        args.putString("units", units);
+        args.putInt("pressure", pressure);
         fragment.setArguments(args);
         return fragment;
     }
@@ -330,6 +327,23 @@ public class WeatherFragment extends Fragment {
             return cityName;
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    private String chooseDegree() {
+        if (units.equals("metric")) {
+            return getString(R.string.celsius);
+        } else {
+            return getString(R.string.fahrenheit);
+        }
+    }
+
+    private String choosePressure() {
+        if (pressure == 0) {
+            return String.valueOf(Math.round(pressureValue / 1.33322387415))
+                    .concat(getString(R.string.mmHg));
+        } else {
+            return pressureValue + getString(R.string.hPa);
         }
     }
 }

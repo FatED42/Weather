@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/toWikiBtn"
-            tools:text="Saint-Petersburg, RU" />
+            tools:text="Saint Petersburg, RU" />
 
         <ImageButton
             android:id="@+id/toWikiBtn"
