@@ -1,6 +1,8 @@
 package com.example.weather.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +19,17 @@ import com.example.weather.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesListRecyclerViewAdapter.ViewHolder> {
     private ArrayList<CityCard> data = new ArrayList<>();
     private IAdapterCallbacks adapterCallbacks;
 
-    public CitiesListRecyclerViewAdapter(ArrayList<CityCard> data,IAdapterCallbacks adapterCallbacks) {
+    public CitiesListRecyclerViewAdapter(ArrayList<CityCard> data, IAdapterCallbacks adapterCallbacks) {
+        Log.d("CitiesListRVAdapter", "creating new adapter with " + data.toString());
         if (data != null) {
             this.data = data;
         }
@@ -35,15 +42,19 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
     }
 
     public void removeItem() {
+        Log.d("CitiesListRVAdapter", "removingItem");
         if (!data.isEmpty()) {
             data.remove(0);
             notifyItemRemoved(0);
         }
     }
 
-    public boolean checkIsItemInData(String city) {
-        CityCard cityCard = new CityCard(city);
-        return data.contains(cityCard);
+    public void removeItem(int postition) {
+        Log.d("CitiesListRVAdapter", "removingItem");
+        if (!data.isEmpty()) {
+            data.remove(postition);
+            notifyItemRemoved(postition);
+        }
     }
 
 
@@ -58,50 +69,35 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.textView.setText(data.get(position).getText());
-        holder.imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, R.string.do_you_want_delete_city, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.yes, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!data.isEmpty()) {
-                                    String city = holder.textView.getText().toString();
-                                    CityCard cityCard = new CityCard(city);
-                                    int pos = data.indexOf(cityCard);
-                                    data.remove(cityCard);
-                                    notifyItemRemoved(pos);
-                                }
-                            }
-                        }).show();
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Snackbar.make(v, R.string.do_you_want_delete_city, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.yes, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!data.isEmpty()) {
-                                    String city = holder.textView.getText().toString();
-                                    CityCard cityCard = new CityCard(city);
-                                    int pos = data.indexOf(cityCard);
-                                    data.remove(cityCard);
-                                    notifyItemRemoved(pos);
-                                }
-                            }
-                        }).show();
-                return true;
-            }
-        });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapterCallbacks.startWeatherFragment(holder.textView.getText().toString());
-            }
-        });
+        holder.imageButton.setOnClickListener(view -> Snackbar.make(view, "Удалить город?", Snackbar.LENGTH_LONG)
+                .setAction("Да", view12 -> {
+                    if (!data.isEmpty()) {
+                        String city = holder.cityName.getText().toString();
+                        Log.d("CitiesListRVAdapter", "deleting item " + city + " " + data.toString());
+                        CityCard cityCard = new CityCard(city);
+                        int pos = data.indexOf(cityCard);
+                        data.remove(cityCard);
+                        notifyItemRemoved(pos);
+                        adapterCallbacks.saveList();
+                    }
+                }).show());
+
+        holder.cityName.setText(data.get(position).getCityName());
+
+        holder.temp.setText(
+                String.valueOf(
+                        Math.round(data.get(position).getTemp())
+                ).concat("°"));
+
+        holder.feels_temp.setText(
+                String.valueOf(
+                        Math.round(data.get(position).getFeelsTemp())
+                ).concat("°"));
+
+        holder.icon.setText(String.valueOf(data.get(position).getIcon()));
+        holder.rippleView.setOnClickListener(view -> adapterCallbacks.startTempScreenFragment(holder.cityName.getText().toString()));
+
+        adapterCallbacks.onAdapterUpdate();
     }
 
     @Override
@@ -109,14 +105,26 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
         return data.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.cityTextViewOnCard)
+        TextView cityName;
+        @BindView(R.id.icon_card)
+        TextView icon;
+        @BindView(R.id.temp_card)
+        TextView temp;
+        @BindView(R.id.feels_like_temp_card)
+        TextView feels_temp;
+        @BindView(R.id.delete_city_btn)
         ImageButton imageButton;
+        @BindView(R.id.rippleView)
+        RippleView rippleView;
 
         ViewHolder(View view) {
             super(view);
-            imageButton = itemView.findViewById(R.id.delete_city_btn);
-            textView = itemView.findViewById(R.id.cityTextViewOnCard);
+            ButterKnife.bind(this, view);
+            Typeface weatherFont = Typeface.createFromAsset(Objects.requireNonNull(view.getContext()).getAssets(), "fonts/weathericons.ttf");
+            icon.setTypeface(weatherFont);
         }
     }
 }
