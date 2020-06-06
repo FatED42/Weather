@@ -1,13 +1,10 @@
 package com.example.weather.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputType;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,14 +28,11 @@ import com.example.weather.activity.WeatherActivity;
 import com.example.weather.adapters.CitiesListRecyclerViewAdapter;
 import com.example.weather.callBackInterfaces.IAdapterCallbacks;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 
 public class CitiesFragment extends Fragment implements IAdapterCallbacks {
 
@@ -49,6 +43,7 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     private ArrayList<CityCard> list;
     private CityPreference cityPreference;
     private final Handler handler = new Handler();
+    private static final int REQUEST_CODE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -171,41 +166,12 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.add_city_btn) {
-            showInputDialog();
+            DialogBuilderFragment dialFrag = new DialogBuilderFragment();
+            dialFrag.setTargetFragment(this, REQUEST_CODE);
+            dialFrag.show(getParentFragmentManager(), "dialog");
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showInputDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.add_city);
-        final TextInputLayout layout = new TextInputLayout(requireActivity());
-        final TextInputEditText editText = new TextInputEditText(requireActivity());
-        TypedValue outValue = new TypedValue();
-        requireActivity().getTheme().resolveAttribute(R.attr.themeName, outValue, true);
-        if ("dark".contentEquals(outValue.string)) editText.setTextColor(getResources().getColor(R.color.colorBackground));
-
-        layout.addView(editText);
-        layout.setHint(getString(R.string.choose_city));
-        layout.setPadding(64, 32, 64, 32);
-        editText.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(layout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String city = Objects.requireNonNull(editText.getText()).toString();
-                updateWeatherData(city, "metric");
-            }
-        });
-
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                requireActivity().closeContextMenu();
-            }
-        });
-        builder.show();
     }
 
     private void updateWeatherData(final String city, final String units) {
@@ -230,6 +196,18 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
                     });
                 }
             }.start();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                assert data != null;
+                String city = data.getStringExtra(DialogBuilderFragment.CITY_ADDED);
+                updateWeatherData(city, "metric");
+            }
         }
     }
 }
