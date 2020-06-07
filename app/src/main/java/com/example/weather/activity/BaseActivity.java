@@ -26,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean isDarkTheme() {
         SharedPreferences sharedPref = getSharedPreferences(NameSharedPreference, MODE_PRIVATE);
-        return sharedPref.getBoolean(IsDarkTheme, true);
+        return sharedPref.getBoolean(IsDarkTheme, false);
     }
 
     protected void setDarkTheme(boolean isDarkTheme) {
