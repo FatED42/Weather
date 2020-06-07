@@ -41,33 +41,27 @@ public class AboutFragment extends Fragment {
     }
 
     private void emailBtnClicked() {
-        emailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] email = {"cjkrol43@gmail.com"};
-                Uri uri = Uri.parse("mailto:");
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
-                try {
-                    startActivity(Intent.createChooser(emailIntent, getString(R.string.send_feedback)));
-                    Log.i("email", "Finished sending email...");
-                } catch (android.content.ActivityNotFoundException e) {
-                    Toast.makeText(getContext(), "There is no email client installed",
-                            Toast.LENGTH_SHORT).show();
-                }
+        emailBtn.setOnClickListener(v -> {
+            String[] email = {"cjkrol43@gmail.com"};
+            Uri uri = Uri.parse("mailto:");
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
+            try {
+                startActivity(Intent.createChooser(emailIntent, getString(R.string.send_feedback)));
+                Log.i("email", "Finished sending email...");
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(getContext(), "There is no email client installed",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void gitHubBtnClicked() {
-        gitHubBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://github.com/FatED42/Weather";
-                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-            }
+        gitHubBtn.setOnClickListener(v -> {
+            String url = "https://github.com/FatED42/Weather";
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
         });
     }
 

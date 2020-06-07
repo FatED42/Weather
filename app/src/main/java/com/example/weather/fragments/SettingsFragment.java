@@ -43,14 +43,11 @@ public class SettingsFragment extends Fragment {
     private void pressureRadBtnListener() {
         if (cityPreference.getPressure()==0) radBtnMmHg.setChecked(true);
         else radBtnHPa.setChecked(true);
-        pressureRadGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == R.id.radBtnMmHg) {
-                    cityPreference.setPressure(0);
-                } else {
-                    cityPreference.setPressure(1);
-                }
+        pressureRadGrp.setOnCheckedChangeListener((radioGroup, i) -> {
+            if (i == R.id.radBtnMmHg) {
+                cityPreference.setPressure(0);
+            } else {
+                cityPreference.setPressure(1);
             }
         });
     }
@@ -58,14 +55,11 @@ public class SettingsFragment extends Fragment {
     private void degreeRadBtnListener() {
         if (cityPreference.getUnits().equals("metric")) radBtnCelsius.setChecked(true);
         else radBtnFahrenheit.setChecked(true);
-        degreeRadGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == R.id.radBtnCelsius) {
-                    cityPreference.setUnits("metric");
-                } else {
-                    cityPreference.setUnits("imperial");
-                }
+        degreeRadGrp.setOnCheckedChangeListener((radioGroup, i) -> {
+            if (i == R.id.radBtnCelsius) {
+                cityPreference.setUnits("metric");
+            } else {
+                cityPreference.setUnits("imperial");
             }
         });
     }
@@ -73,15 +67,12 @@ public class SettingsFragment extends Fragment {
 
     private void darkThemeCheckBoxListener() {
         darkThemeCheckBox.setChecked(cityPreference.getThemeCheckBox());
-        darkThemeCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (darkThemeCheckBox.isChecked()) {
-                    darkThemeCheckBox.setChecked(false);
-                } else darkThemeCheckBox.setChecked(true);
-                cityPreference.setThemeCheckBox(darkThemeCheckBox.isChecked());
-                EventBus.getBus().post(new ChangeThemeBtnClickedEvent(darkThemeCheckBox.isChecked()));
-            }
+        darkThemeCheckBox.setOnClickListener(view -> {
+            if (darkThemeCheckBox.isChecked()) {
+                darkThemeCheckBox.setChecked(false);
+            } else darkThemeCheckBox.setChecked(true);
+            cityPreference.setThemeCheckBox(darkThemeCheckBox.isChecked());
+            EventBus.getBus().post(new ChangeThemeBtnClickedEvent(darkThemeCheckBox.isChecked()));
         });
     }
 

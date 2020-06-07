@@ -3,112 +3,87 @@ package com.example.weather;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.weather.event.GetListEvent;
-import com.example.weather.event.UpdateRecyclerListAfterParsingData;
-import com.example.weather.rest.models.TimeGap;
 import com.example.weather.rest.models.WeatherModel;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class WeatherDataParser {
 
-    private static final String LOG_TAG = "WeatherParser";
+    private static final String LOG_TAG = "WeatherDataParser";
 
     static void parseDataToCard(CityCard cityCard, WeatherModel weatherModel, Context context) {
         Log.d(LOG_TAG, "starting parsing for " + cityCard.getCityName() + " with retrofit");
         assert weatherModel != null;
-        cityCard.setTemp(weatherModel.main.temp);
-        cityCard.setTempMax(weatherModel.main.tempMax);
-        cityCard.setTempMin(weatherModel.main.tempMin);
-        cityCard.setFeelsTemp(weatherModel.main.feelsLike);
+        cityCard.setTemp(weatherModel.getMain().getTemp());
+        cityCard.setTempMax(weatherModel.getMain().getTempMax());
+        cityCard.setTempMin(weatherModel.getMain().getTempMin());
+        cityCard.setFeelsTemp(weatherModel.getMain().getFeelsLike());
         cityCard.setIcon(getWeatherIcon(
-                weatherModel.weather.get(0).id,
-                weatherModel.sys.sunrise,
-                weatherModel.sys.sunset,
+                weatherModel.getWeather().get(0).getId(),
+                weatherModel.getSys().getSunrise(),
+                weatherModel.getSys().getSunset(),
                 context));
-        cityCard.setHumidity(weatherModel.main.humidity);
-        cityCard.setPressure(weatherModel.main.pressure);
-        cityCard.setCityName(weatherModel.name);
-        cityCard.setCountry(weatherModel.sys.country);
-        cityCard.setDescription(weatherModel.weather.get(0).description);
-        cityCard.setUpdateOn(getUpdateTime(weatherModel.dt));
-        cityCard.setWind(weatherModel.wind.speed);
-        EventBus.getBus().post(new UpdateRecyclerListAfterParsingData(cityCard.getPosition()));
+        cityCard.setHumidity(weatherModel.getMain().getHumidity());
+        cityCard.setPressure(weatherModel.getMain().getPressure());
+        cityCard.setCityName(weatherModel.getName());
+        cityCard.setCountry(weatherModel.getSys().getCountry());
+        cityCard.setDescription(weatherModel.getWeather().get(0).getDescription());
+        cityCard.setUpdateOn(getUpdateTime(weatherModel.getDt()));
+        cityCard.setWind(weatherModel.getWind().getSpeed());
     }
 
-    static void parseForecast(WeatherModel weatherModel, Context context) {
-        ArrayList<ForecastCard> cards = new ArrayList<>();
-        List<TimeGap> timeGaps = weatherModel.list;
-        int count = 0;
-        for (int i = 0; i < timeGaps.size(); i++) {
-            int day = getDay(timeGaps.get(i).dt);
-            int hour = getHour(timeGaps.get(i).dt);
-            int id = timeGaps.get(i).weather.get(0).id;
-            long sunrise = weatherModel.city.sunrise;
-            long sunset = weatherModel.city.sunset;
+    static void parseDataToCard(CityCard cityCard, JSONObject json, Context context) {
+        Log.d(LOG_TAG, "json " + json.toString());
+        try {
+            //up
+            String cityName = json.getString("name");
+            //sys
+            String country = json.getJSONObject("sys").getString("country");
+            long sunrise = json.getJSONObject("sys").getLong("sunrise") * 1000;
+            long sunset = json.getJSONObject("sys").getLong("sunset") * 1000;
+            //weather
+            JSONObject weather = json.getJSONArray("weather").getJSONObject(0);
+            String overcastValue = weather.getString("description");
+            int id = weather.getInt("id");
+            //main
+            JSONObject main = json.getJSONObject("main");
+            double tempToday = main.getDouble("temp");
+            double tempFeelsLike = main.getDouble("feels_like");
+            double tempMin = main.getDouble("temp_min");
+            double tempMax = main.getDouble("temp_max");
+            int pressureValue = main.getInt("pressure");
+            int humidityValue = main.getInt("humidity");
+            //wind
+            int windValue = json.getJSONObject("wind").getInt("speed");
+            //date
+            String updateOn = getUpdateTime(json.getInt("dt"));
             String icon = getWeatherIcon(id, sunrise, sunset, context);
-            if (cards.size() == 0) {
-                ForecastCard card = new ForecastCard(context.getString(R.string.now), icon, timeGaps.get(i).main.temp, day, hour);
-                card.setCountry(weatherModel.city.country);
-                card.setName(weatherModel.city.name);
-                card.setDescription(timeGaps.get(i).weather.get(0).description);
-                card.setHumidity(timeGaps.get(i).main.humidity);
-                card.setPressure(timeGaps.get(i).main.pressure);
-                card.setTempFeelsLike(timeGaps.get(i).main.feelsLike);
-                card.setTempMax(timeGaps.get(i).main.tempMax);
-                card.setTempMin(timeGaps.get(i).main.tempMin);
-                card.setUpdateOn(getUpdateTime(timeGaps.get(i).dt));
-                cards.add(card);
-                count++;
-            } else if (day != cards.get(count - 1).getDay()
-                    && hour == 12) {
-                ForecastCard card = new ForecastCard(getDayOfWeek(timeGaps.get(i).dt, cards, context), icon, timeGaps.get(i).main.temp, day, hour);
-                cards.add(card);
-                count++;
-            } else if (day != cards.get(count - 1).getDay()
-                    && hour == 3) {
-                cards.get(count - 1).setTempNight(timeGaps.get(i).main.temp);
-            }
 
+            cityCard.setTemp(tempToday);
+            cityCard.setTempMax(tempMax);
+            cityCard.setTempMin(tempMin);
+            cityCard.setFeelsTemp(tempFeelsLike);
+            cityCard.setIcon(icon);
+            cityCard.setHumidity(humidityValue);
+            cityCard.setPressure(pressureValue);
+            cityCard.setCityName(cityName);
+            cityCard.setCountry(country);
+            cityCard.setDescription(overcastValue);
+            cityCard.setUpdateOn(updateOn);
+            cityCard.setWind(windValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "One or more fields not found in the JSON data");
         }
-        EventBus.getBus().post(new GetListEvent(cards));
     }
-
 
     private static String getUpdateTime(long dt) {
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault()).format(new Date(dt * 1000));
-    }
-
-    private static int getDay(long dt) {
-        Date date = new Date(dt * 1000);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_MONTH);
-    }
-
-    private static int getHour(long dt) {
-        Date date = new Date(dt * 1000);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.HOUR_OF_DAY);
-    }
-
-    private static String getDayOfWeek(long dt, ArrayList<ForecastCard> cards, Context context) {
-        Date date = new Date(dt * 1000);
-        switch (cards.size()) {
-            case 0:
-                return context.getString(R.string.now);
-            case 1:
-                return context.getString(R.string.tomorrow);
-            default:
-                return android.text.format.DateFormat.format("EEEE", date).toString();
-
-        }
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                DateFormat.SHORT, Locale.getDefault()).format(new Date(dt * 1000));
     }
 
     private static String getWeatherIcon(int actualId, long sunrise, long sunset, Context context) {

@@ -65,5 +65,6 @@
     <string name="cities_list">Cities list</string>
     <string name="communicate">Communicate</string>
     <string name="about">About developer</string>
+    <string name="background_gif">Background GIF</string>
 
 </resources>

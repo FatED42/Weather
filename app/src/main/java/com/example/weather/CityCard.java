@@ -1,46 +1,16 @@
 package com.example.weather;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity(indices = {@Index(value = {"cityName", "number_of_searches"})})
 public class CityCard implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    public long id;
-
-    @ColumnInfo(name = "cityName")
-    public String cityName;
-
-    @Ignore
-    public double temp;
-
-    @ColumnInfo(name = "number_of_searches")
-    public int numberOfSearches;
-
-    @Ignore
     private int position;
-    @Ignore
     private int humidity;
-    @Ignore
     private int pressure;
-    @Ignore
     private int wind;
-
-    @Ignore
-    private int dt;
-
-    @Ignore
-    private String icon, country, description, updateOn;
-
-    @Ignore
-    private double feelsTemp, tempMax, tempMin;
+    private String cityName, icon, country, description, updateOn;
+    private double temp, feelsTemp, tempMax, tempMin;
 
     public CityCard(String cityName) {
         this.cityName = cityName;
@@ -48,6 +18,10 @@ public class CityCard implements Serializable {
 
     public String getCityName() {
         return cityName;
+    }
+
+    public int getHumidity() {
+        return humidity;
     }
 
     void setHumidity(int humidity) {
@@ -62,6 +36,10 @@ public class CityCard implements Serializable {
         this.pressure = pressure;
     }
 
+    public int getWind() {
+        return wind;
+    }
+
     void setWind(double wind) {
         this.wind = (int) wind;
     }
@@ -74,12 +52,24 @@ public class CityCard implements Serializable {
         this.icon = icon;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
     void setCountry(String country) {
         this.country = country;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUpdateOn() {
+        return updateOn;
     }
 
     void setUpdateOn(String updateOn) {
@@ -94,8 +84,16 @@ public class CityCard implements Serializable {
         this.feelsTemp = feelsTemp;
     }
 
+    public double getTempMax() {
+        return tempMax;
+    }
+
     void setTempMax(double tempMax) {
         this.tempMax = tempMax;
+    }
+
+    public double getTempMin() {
+        return tempMin;
     }
 
     void setTempMin(double tempMin) {

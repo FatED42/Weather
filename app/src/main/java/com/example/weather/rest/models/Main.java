@@ -7,30 +7,69 @@ public class Main {
 
     @SerializedName("temp")
     @Expose
-    public double temp;
+    private double temp;
     @SerializedName("feels_like")
     @Expose
-    public double feelsLike;
+    private double feelsLike;
     @SerializedName("temp_min")
     @Expose
-    public double tempMin;
+    private double tempMin;
     @SerializedName("temp_max")
     @Expose
-    public double tempMax;
+    private double tempMax;
     @SerializedName("pressure")
     @Expose
-    public int pressure;
+    private int pressure;
     @SerializedName("humidity")
     @Expose
-    public int humidity;
-    @SerializedName("sea_level")
-    @Expose
-    public int seaLevel;
-    @SerializedName("grnd_level")
-    @Expose
-    public int grndLevel;
-    @SerializedName("temp_kf")
-    @Expose
-    public double tempKf;
+    private int humidity;
+
+    public double getTemp() {
+        return temp;
+    }
+
+    public void setTemp(double temp) {
+        this.temp = temp;
+    }
+
+    public double getFeelsLike() {
+        return feelsLike;
+    }
+
+    public void setFeelsLike(double feelsLike) {
+        this.feelsLike = feelsLike;
+    }
+
+    public double getTempMin() {
+        return tempMin;
+    }
+
+    public void setTempMin(double tempMin) {
+        this.tempMin = tempMin;
+    }
+
+    public double getTempMax() {
+        return tempMax;
+    }
+
+    public void setTempMax(int tempMax) {
+        this.tempMax = tempMax;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
 
 }
