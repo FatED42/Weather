@@ -12,10 +12,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.weather.ConnectionStateMonitor;
 import com.example.weather.R;
 import com.example.weather.event.ChangeThemeBtnClickedEvent;
-import com.example.weather.fragments.DialogBuilderFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.example.weather.EventBus;
 import com.squareup.otto.Subscribe;
@@ -32,8 +30,6 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setNavigationUI();
-        ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor();
-        connectionStateMonitor.enable(getApplicationContext());
     }
 
     @Override

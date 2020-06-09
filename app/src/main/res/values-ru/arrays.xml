@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="cities">
-        <item>Зеленоград</item>
-        <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Рославль</item>
-    </string-array>
-</resources>

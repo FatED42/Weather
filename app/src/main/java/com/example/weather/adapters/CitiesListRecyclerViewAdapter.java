@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.andexert.library.RippleView;
 import com.example.weather.CityCard;
 import com.example.weather.callBackInterfaces.IAdapterCallbacks;
 import com.example.weather.R;
@@ -25,14 +26,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesListRecyclerViewAdapter.ViewHolder> {
-    private ArrayList<CityCard> data = new ArrayList<>();
+    private ArrayList<CityCard> data;
     private IAdapterCallbacks adapterCallbacks;
 
     public CitiesListRecyclerViewAdapter(ArrayList<CityCard> data, IAdapterCallbacks adapterCallbacks) {
         Log.d("CitiesListRVAdapter", "creating new adapter with " + data.toString());
-        if (data != null) {
-            this.data = data;
-        }
+        this.data = data;
         this.adapterCallbacks = adapterCallbacks;
     }
 
@@ -49,15 +48,6 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
         }
     }
 
-    public void removeItem(int postition) {
-        Log.d("CitiesListRVAdapter", "removingItem");
-        if (!data.isEmpty()) {
-            data.remove(postition);
-            notifyItemRemoved(postition);
-        }
-    }
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,8 +59,8 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.imageButton.setOnClickListener(view -> Snackbar.make(view, "Удалить город?", Snackbar.LENGTH_LONG)
-                .setAction("Да", view12 -> {
+        holder.imageButton.setOnClickListener(view -> Snackbar.make(view, R.string.do_you_want_delete_city, Snackbar.LENGTH_LONG)
+                .setAction(R.string.yes, view12 -> {
                     if (!data.isEmpty()) {
                         String city = holder.cityName.getText().toString();
                         Log.d("CitiesListRVAdapter", "deleting item " + city + " " + data.toString());
@@ -81,6 +71,19 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
                         adapterCallbacks.saveList();
                     }
                 }).show());
+        holder.rippleView.setOnLongClickListener(view -> {
+            Snackbar.make(view, "Удалить город?", Snackbar.LENGTH_LONG)
+                    .setAction("Да", view1 -> {
+                        if (!data.isEmpty()) {
+                            String city = holder.cityName.getText().toString();
+                            CityCard cityCard = new CityCard(city);
+                            int pos = data.indexOf(cityCard);
+                            data.remove(cityCard);
+                            notifyItemRemoved(pos);
+                        }
+                    }).show();
+            return true;
+        });
 
         holder.cityName.setText(data.get(position).getCityName());
 
@@ -95,7 +98,7 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
                 ).concat("°"));
 
         holder.icon.setText(String.valueOf(data.get(position).getIcon()));
-        holder.rippleView.setOnClickListener(view -> adapterCallbacks.startTempScreenFragment(holder.cityName.getText().toString()));
+        holder.rippleView.setOnClickListener(view -> adapterCallbacks.startWeatherFragment(holder.cityName.getText().toString()));
 
         adapterCallbacks.onAdapterUpdate();
     }
@@ -106,7 +109,7 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.cityTextViewOnCard)
         TextView cityName;
         @BindView(R.id.icon_card)

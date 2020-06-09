@@ -40,17 +40,16 @@ public class CityPreference {
         String json = userPreference.getString(CITIES_LIST_KEY, null);
         Type type = new TypeToken<ArrayList<CityCard>>() {}.getType();
         ArrayList<CityCard> array = gson.fromJson(json, type);
-        if (array == null) {
-            CityCard[] data = new CityCard[]{
-                    new CityCard("Moscow"),
-                    new CityCard("Saint Petersburg"),
-                    new CityCard("Zelenograd"),
-                    new CityCard("Roslavl")
-            };
-            array = new ArrayList<>(Arrays.asList(data));
-            return array;
+        if (array == null || array.get(0).getCityName() == null) {
+            array = new ArrayList<>();
+            CityCard moscow = new CityCard("Moscow");
+            moscow.setPosition(0);
+            CityCard spb = new CityCard("Saint Petersburg");
+            spb.setPosition(1);
+            array.add(moscow);
+            array.add(spb);
         }
-        else return array;
+        return array;
     }
 
     public void setThemeCheckBox(boolean isChecked) {

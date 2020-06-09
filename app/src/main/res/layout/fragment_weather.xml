@@ -29,14 +29,14 @@
             android:gravity="center"
             android:hint="@string/choose_city"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/toWikiBtn"
+            app:layout_constraintBottom_toBottomOf="@id/updateBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/toWikiBtn"
+            app:layout_constraintTop_toTopOf="@id/updateBtn"
             tools:text="Saint Petersburg, RU" />
 
         <ImageButton
-            android:id="@+id/toWikiBtn"
+            android:id="@+id/updateBtn"
             style="@style/imageButton"
             android:contentDescription="@string/change_city_button"
             android:src="@drawable/ic_update_white_24dp"
@@ -52,7 +52,7 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toWikiBtn"
+            app:layout_constraintTop_toBottomOf="@id/updateBtn"
             tools:text="31 дек. 1999 Ср. 23.49" />
 
         <TextView
@@ -191,6 +191,15 @@
             app:layout_constraintStart_toStartOf="@id/humidityValue"
             app:layout_constraintTop_toTopOf="@id/windWord"
             tools:text="2m/s" />
+
+        <ImageView
+            android:id="@+id/backgroundImageTempScreen"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/windValue"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/background_gif" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

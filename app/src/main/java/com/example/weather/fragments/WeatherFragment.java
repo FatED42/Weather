@@ -1,6 +1,5 @@
 package com.example.weather.fragments;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,30 +8,55 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.weather.CityCard;
 import com.example.weather.R;
 import com.example.weather.WeatherDataLoader;
 
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class WeatherFragment extends Fragment {
 
-    private TextView tempTodayTextView, humidityTextView, overcastTextView,
-                    cityTextView, todayDateTextView, pressureTextView, windTextView,
-                    weatherIconTextView, tempMaxTextView, tempMinTextView, tempFeelsLikeTextView;
-    private ImageButton backArrowBtn, updateBtn;
+    //TextView
+    @BindView(R.id.temperatureValue)
+    TextView tempTodayTextView;
+    @BindView(R.id.temperatureFeelsLikeValue)
+    TextView tempFeelsLikeTextView;
+    @BindView(R.id.tempValueMax)
+    TextView tempMaxTextView;
+    @BindView(R.id.tempValueMin)
+    TextView tempMinTextView;
+    @BindView(R.id.humidityValue)
+    TextView humidityTextView;
+    @BindView(R.id.pressureValue)
+    TextView pressureTextView;
+    @BindView(R.id.windValue)
+    TextView windTextView;
+    @BindView(R.id.overcastValue)
+    TextView overcastTextView;
+    @BindView(R.id.cityTextView)
+    TextView cityTextView;
+    @BindView(R.id.todayDate)
+    TextView todayDateTextView;
+    @BindView(R.id.weatherIcon)
+    TextView weatherIconTextView;
+    //ImageButton
+    @BindView(R.id.updateBtn)
+    ImageButton updateBtn;
+    @BindView(R.id.back_arrow)
+    ImageButton backArrowBtn;
+    @BindView(R.id.backgroundImageTempScreen)
+    ImageView backgroundImage;
     private int humidityValue, pressureValue, windValue, pressure;
     private double tempTodayValue, tempFeelsLikeValue, tempMaxValue, tempMinValue;
     private String cityName, overcastValue, country, updateOn, icon, units;
@@ -43,8 +67,8 @@ public class WeatherFragment extends Fragment {
             TEMP_MIN_KEY = "TEMP_MIN_KEY", PRESSURE_KEY = "PRESSURE_KEY",
             WIND_KEY = "WIND_KEY", ICON_KEY = "ICON_KEY";
 
-    private final Handler handler = new Handler();
-    private static final String LOG_TAG = "WeatherFragment";
+    private Unbinder unbinder;
+    private CityCard cityCard;
 
 
 
@@ -75,37 +99,27 @@ public class WeatherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_weather, container, false);
+        View view = inflater.inflate(R.layout.fragment_weather, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        initViews(view);
         initFont();
         showBackButton();
         onBackArrowBtnClicked();
         onUpdateBtnClicked();
-    }
-
-    private void initViews(View view) {
-        //temp
-        tempTodayTextView = view.findViewById(R.id.temperatureValue);
-        tempFeelsLikeTextView = view.findViewById(R.id.temperatureFeelsLikeValue);
-        tempMaxTextView = view.findViewById(R.id.tempValueMax);
-        tempMinTextView =  view.findViewById(R.id.tempValueMin);
-        //descriptions
-        humidityTextView = view.findViewById(R.id.humidityValue);
-        overcastTextView = view.findViewById(R.id.overcastValue);
-        pressureTextView = view.findViewById(R.id.pressureValue);
-        windTextView = view.findViewById(R.id.windValue);
-        //other
-        cityTextView = view.findViewById(R.id.cityTextView);
-        updateBtn = view.findViewById(R.id.toWikiBtn);
-        todayDateTextView = view.findViewById(R.id.todayDate);
-        backArrowBtn = view.findViewById(R.id.back_arrow);
-        weatherIconTextView = view.findViewById(R.id.weatherIcon);
+        updateWeatherOnScreen();
+        setValues();
+        setBackgroundImage();
     }
 
     private void initFont() {
@@ -163,90 +177,65 @@ public class WeatherFragment extends Fragment {
         weatherIconTextView.setText(icon);
     }
 
-    private void updateWeather() {
-        if (getArguments() != null) {
+    private void updateWeatherOnScreen(){
+        if (getArguments()!= null) {
             units = getArguments().getString("units");
             pressure = getArguments().getInt("pressure");
-            updateWeatherData(getArguments().getString("index"), units);
-        }
-    }
-
-    private void updateWeatherData(final String cityName, final String units) {
-        new Thread() {
-            public void run() {
-                final JSONObject json = WeatherDataLoader.
-                        getJSONData(requireActivity(), cityName, units, Locale.getDefault().getCountry());
-                if (json == null) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getContext(),getString(R.string.city_not_found),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                else {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            renderWeather(json);
-                        }
-                    });
-                }
+            cityCard = (CityCard) getArguments().getSerializable("cityCard");
+            if (cityCard != null) {
+                cityName = cityCard.getCityName();
+                country = cityCard.getCountry();
+                updateOn = cityCard.getUpdateOn();
+                tempTodayValue = cityCard.getTemp();
+                tempFeelsLikeValue = cityCard.getFeelsTemp();
+                tempMinValue = cityCard.getTempMin();
+                tempMaxValue = cityCard.getTempMax();
+                overcastValue = cityCard.getDescription();
+                humidityValue = cityCard.getHumidity();
+                pressureValue = cityCard.getPressure();
+                windValue = cityCard.getWind();
+                icon = cityCard.getIcon();
             }
-        }.start();
-    }
-
-    private void renderWeather(JSONObject json) {
-        Log.d(LOG_TAG, "json " + json.toString());
-        try {
-            //up
-            cityName = json.getString("name");
-            //sys
-            country = json.getJSONObject("sys").getString("country");
-            long sunrise = json.getJSONObject("sys").getLong("sunrise") * 1000;
-            long sunset = json.getJSONObject("sys").getLong("sunset") * 1000;
-            //weather
-            JSONObject weather = json.getJSONArray("weather").getJSONObject(0);
-            overcastValue = weather.getString("description");
-            int id = weather.getInt("id");
-            //main
-            JSONObject main = json.getJSONObject("main");
-            tempTodayValue = main.getDouble("temp");
-            tempFeelsLikeValue = main.getDouble("feels_like");
-            tempMinValue = main.getDouble("temp_min");
-            tempMaxValue = main.getDouble("temp_max");
-            pressureValue = main.getInt("pressure");
-            humidityValue = main.getInt("humidity");
-            //wind
-            windValue = json.getJSONObject("wind").getInt("speed");
-            //date
-            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
-            updateOn = dateFormat.format(new Date(json.getLong("dt") * 1000));
-
-            icon = getWeatherIcon(id, sunrise, sunset);
-
-            setValues();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, "One or more fields not found in the JSON data");
         }
     }
 
-    static WeatherFragment newInstance(String cityName, String units, int pressure) {
+    private void setBackgroundImage() {
+        String icon = cityCard.getIcon();
+        String url;
+        if (icon != null) {
+            if (icon.equals(getString(R.string.weather_sunny))) {
+                url = "https://images.unsplash.com/photo-1576433438817-bdf226ef9f87?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1834&q=80";
+            } else if (icon.equals(getString(R.string.weather_cloudy))) {
+                url = "https://images.unsplash.com/photo-1507291877270-e37ad1ce08a4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80";
+            } else if (icon.equals(getString(R.string.weather_foggy))) {
+                url = "https://images.unsplash.com/photo-1575195372639-373ecc8590f9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80";
+            } else if (icon.equals(getString(R.string.weather_snowy))) {
+                url = "https://images.unsplash.com/photo-1517504734587-2890819debab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=528&q=80";
+            } else if (icon.equals(getString(R.string.weather_rainy))) {
+                url = "https://images.unsplash.com/photo-1509635022432-0220ac12960b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80";
+            } else if (icon.equals(getString(R.string.weather_drizzle))) {
+                url = "https://images.unsplash.com/photo-1504350987704-6f027af335c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80";
+            } else if (icon.equals(getString(R.string.weather_thunder))) {
+                url = "https://images.unsplash.com/photo-1495917171981-79ce0e0456de?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1002&q=80";
+            } else {
+                url = "https://images.unsplash.com/photo-1564572681888-6d02eed77008?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80";
+            }
+            Glide.with(requireContext())
+                    .load(url)
+                    .centerCrop()
+                    .into(backgroundImage);
+        }
+    }
+
+    static WeatherFragment newInstance(CityCard cityCard, String units, int pressure) {
         Bundle args = new Bundle();
         WeatherFragment fragment = new WeatherFragment();
-        args.putString("index", cityName);
+        args.putString("index", cityCard.getCityName());
         args.putString("units", units);
         args.putInt("pressure", pressure);
+        args.putSerializable("cityCard", cityCard);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        updateWeather();
-        super.onAttach(context);
     }
 
     private void showBackButton() {
@@ -259,65 +248,18 @@ public class WeatherFragment extends Fragment {
     }
 
     private void onBackArrowBtnClicked() {
-        backArrowBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity() != null) {
-                    getActivity().finish();
-                }
+        backArrowBtn.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().finish();
             }
         });
     }
 
-    private String getWeatherIcon(int actualId, long sunrise, long sunset) {
-        int id = actualId / 100;
-        String icon = "";
-
-        if (actualId == 800) {
-            long currentTime = new Date().getTime();
-            if (currentTime >= sunrise && currentTime < sunset) {
-                icon = getString(R.string.weather_sunny);
-            } else {
-                icon = getString(R.string.weather_clear_night);
-            }
-        } else {
-            switch (id) {
-                case 2: {
-                    icon = getString(R.string.weather_thunder);
-                    break;
-                }
-                case 3: {
-                    icon = getString(R.string.weather_drizzle);
-                    break;
-                }
-                case 5: {
-                    icon = getString(R.string.weather_rainy);
-                    break;
-                }
-                case 6: {
-                    icon = getString(R.string.weather_snowy);
-                    break;
-                }
-                case 7: {
-                    icon = getString(R.string.weather_foggy);
-                    break;
-                }
-                case 8: {
-                    icon = getString(R.string.weather_cloudy);
-                    break;
-                }
-            }
-        }
-        return icon;
-    }
-
     private void onUpdateBtnClicked() {
-        updateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateWeather();
-                Toast.makeText(getContext(), getString(R.string.updating), Toast.LENGTH_SHORT).show();
-            }
+        updateBtn.setOnClickListener(v -> {
+            Toast.makeText(getContext(), getString(R.string.updating), Toast.LENGTH_SHORT).show();
+            WeatherDataLoader.getCurrentData2(cityCard, requireContext(), units);
+            setValues();
         });
     }
 
