@@ -37,28 +37,21 @@ public class DialogBuilderFragment extends DialogFragment {
             editText.setTextColor(getResources().getColor(R.color.colorBackground));
 
         layout.addView(editText);
-        layout.setHint(getString(R.string.choose_city));
+        layout.setHint(getString(R.string.enter_city_name));
         layout.setPadding(64, 32, 64, 32);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(layout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-                String city = Objects.requireNonNull(editText.getText()).toString();
-                Intent intent = new Intent();
-                intent.putExtra(CITY_ADDED, city);
-                Objects.requireNonNull(getTargetFragment()).onActivityResult(getTargetRequestCode(),
-                        Activity.RESULT_OK, intent);
-            }
+        builder.setPositiveButton("OK", (dialogInterface, i) -> {
+            dismiss();
+            String city = Objects.requireNonNull(editText.getText()).toString();
+            city = city.substring(0, 1).toUpperCase() + city.substring(1);
+            Intent intent = new Intent();
+            intent.putExtra(CITY_ADDED, city);
+            Objects.requireNonNull(getTargetFragment()).onActivityResult(getTargetRequestCode(),
+                    Activity.RESULT_OK, intent);
         });
 
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-            }
-        });
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dismiss());
         return builder.create();
     }
 }

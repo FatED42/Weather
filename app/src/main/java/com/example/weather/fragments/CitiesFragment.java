@@ -216,19 +216,6 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
         }
     }
 
-    @Subscribe
-    public void addCityToList(AddCityToListEvent event) {
-        CityCard cityCard = event.getCityCard();
-        if (cityCard.getCityName() != null && !list.contains(cityCard)) {
-            adapter.addItem(cityCard);
-            cityCard.setPosition(list.indexOf(cityCard));
-            if (cityPreference != null) saveList();
-            recyclerView.scrollToPosition(0);
-            Snackbar.make(recyclerView, R.string.city_added, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.cancel, view -> deleteCityFromList()).show();
-        }
-    }
-
     private CityCard getCityCardByItsName(String city) {
         for (CityCard c : list) {
             if (c.getCityName().equals(city)) return c;
@@ -255,9 +242,25 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
             if (resultCode == Activity.RESULT_OK) {
                 assert data != null;
                 String city = data.getStringExtra(DialogBuilderFragment.CITY_ADDED);
-                WeatherDataLoader.getCurrentData(Objects.requireNonNull(getCityCardByItsName(city)),
-                        requireContext(), units, false);
+                CityCard cityCard = new CityCard(city);
+                if (!list.contains(cityCard)) {
+                    WeatherDataLoader.getCurrentData(cityCard,
+                            requireContext(), units, true);
+                }
             }
+        }
+    }
+
+    @Subscribe
+    public void addCityToList(AddCityToListEvent event) {
+        CityCard cityCard = event.getCityCard();
+        if (cityCard.getCityName() != null && !list.contains(cityCard)) {
+            adapter.addItem(cityCard);
+            cityCard.setPosition(list.indexOf(cityCard));
+            if (cityPreference != null) saveList();
+            recyclerView.scrollToPosition(0);
+            Snackbar.make(recyclerView, R.string.city_added, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.cancel, view -> deleteCityFromList()).show();
         }
     }
 }
