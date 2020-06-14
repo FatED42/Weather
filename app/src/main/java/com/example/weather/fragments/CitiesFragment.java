@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.weather.App;
+import com.example.weather.CitiesHistorySource;
 import com.example.weather.CityCard;
 import com.example.weather.CityPreference;
 import com.example.weather.EventBus;
@@ -30,13 +32,14 @@ import com.example.weather.WeatherDataLoader;
 import com.example.weather.activity.WeatherActivity;
 import com.example.weather.adapters.CitiesListRecyclerViewAdapter;
 import com.example.weather.callBackInterfaces.IAdapterCallbacks;
+import com.example.weather.dao.ICitiesDao;
 import com.example.weather.event.AddCityToListEvent;
 import com.example.weather.event.UpdateRecyclerListAfterParsingData;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,9 +60,11 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     private boolean isTempScreenExists;
     private String cityName, units;
     private ArrayList<CityCard> list;
+    private List<CityCard> cityCardsFromSQL;
     private CityPreference cityPreference;
     private static final int REQUEST_CODE = 1;
     private Unbinder unbinder;
+    private CitiesHistorySource citiesHistorySource;
 
 
     @Override
@@ -98,11 +103,19 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initSQLServices();
         initPreferences();
         initList();
         renderWeather();
         setSwipeListener();
         setUpBackgroundGif();
+        if (savedInstanceState == null) startWeatherFragment(cityPreference.getCity());
+    }
+
+    private void initSQLServices() {
+        ICitiesDao citiesDao = App.getInstance().getCitiesDao();
+        citiesHistorySource = new CitiesHistorySource(citiesDao);
+        cityCardsFromSQL = citiesHistorySource.getCityCardList();
     }
 
     private void setUpBackgroundGif() {
@@ -212,7 +225,7 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     private void renderWeather() {
         for (CityCard c : list) {
             c.setPosition(list.indexOf(c));
-            WeatherDataLoader.getCurrentData(c, requireContext(), units, false);
+            WeatherDataLoader.getCurrentData(c, requireContext(), units);
         }
     }
 
@@ -220,12 +233,22 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     public void addCityToList(AddCityToListEvent event) {
         CityCard cityCard = event.getCityCard();
         if (cityCard.getCityName() != null && !list.contains(cityCard)) {
+            if (!cityCardsFromSQL.contains(cityCard)) citiesHistorySource.addCity(cityCard);
+            else {
+                for (CityCard c : cityCardsFromSQL) {
+                    if (c.equals(cityCard)) {
+                        c.numberOfSearches++;
+                        citiesHistorySource.updateCity(c);
+                    }
+                }
+            }
             adapter.addItem(cityCard);
             cityCard.setPosition(list.indexOf(cityCard));
             if (cityPreference != null) saveList();
             recyclerView.scrollToPosition(0);
             Snackbar.make(recyclerView, R.string.city_added, Snackbar.LENGTH_LONG)
                     .setAction(R.string.cancel, view -> deleteCityFromList()).show();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -255,8 +278,11 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
             if (resultCode == Activity.RESULT_OK) {
                 assert data != null;
                 String city = data.getStringExtra(DialogBuilderFragment.CITY_ADDED);
-                WeatherDataLoader.getCurrentData(Objects.requireNonNull(getCityCardByItsName(city)),
-                        requireContext(), units, false);
+                CityCard cityCard = new CityCard(city);
+                if (!list.contains(cityCard)) {
+                    WeatherDataLoader.getCurrentDataAndAddCity(cityCard,
+                            requireContext(), units);
+                }
             }
         }
     }

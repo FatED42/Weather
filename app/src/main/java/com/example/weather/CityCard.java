@@ -1,16 +1,46 @@
 package com.example.weather;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity(indices = {@Index(value = {"cityName", "number_of_searches"})})
 public class CityCard implements Serializable {
 
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+
+    @ColumnInfo(name = "cityName")
+    public String cityName;
+
+    @Ignore
+    public double temp;
+
+    @ColumnInfo(name = "number_of_searches")
+    public int numberOfSearches;
+
+    @Ignore
     private int position;
+    @Ignore
     private int humidity;
+    @Ignore
     private int pressure;
+    @Ignore
     private int wind;
-    private String cityName, icon, country, description, updateOn;
-    private double temp, feelsTemp, tempMax, tempMin;
+
+    @Ignore
+    private int dt;
+
+    @Ignore
+    private String icon, country, description, updateOn;
+
+    @Ignore
+    private double feelsTemp, tempMax, tempMin;
 
     public CityCard(String cityName) {
         this.cityName = cityName;
