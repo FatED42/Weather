@@ -9,6 +9,6 @@
     <color name="colorLightGrey">#313131</color>
     <color name="color_highlight">#efe5fd</color>
     <color name="color_highlight_dark">#424242</color>
-    <color name="design_snackbar_background_color" tools:override="true">?attr/background_color
+    <color name="design_snackbar_background_color" tools:override="true">@color/colorPrimary
     </color>
 </resources>

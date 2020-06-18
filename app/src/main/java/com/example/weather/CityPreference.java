@@ -49,7 +49,7 @@ public class CityPreference {
         String json = userPreference.getString(CITIES_LIST_KEY, null);
         Type type = new TypeToken<ArrayList<CityCard>>() {}.getType();
         ArrayList<CityCard> array = gson.fromJson(json, type);
-        if (array == null || array.get(0).getCityName() == null) {
+        if (array == null) {
             array = new ArrayList<>();
             CityCard moscow = new CityCard("Moscow");
             moscow.setPosition(0);
