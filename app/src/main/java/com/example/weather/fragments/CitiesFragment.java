@@ -27,6 +27,7 @@ import com.example.weather.CitiesHistorySource;
 import com.example.weather.CityCard;
 import com.example.weather.CityPreference;
 import com.example.weather.EventBus;
+import com.example.weather.ICardList;
 import com.example.weather.R;
 import com.example.weather.WeatherDataLoader;
 import com.example.weather.activity.WeatherActivity;
@@ -47,7 +48,7 @@ import butterknife.Unbinder;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class CitiesFragment extends Fragment implements IAdapterCallbacks {
+public class CitiesFragment extends Fragment implements IAdapterCallbacks, ICardList {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -115,7 +116,7 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
     private void initSQLServices() {
         ICitiesDao citiesDao = App.getInstance().getCitiesDao();
         citiesHistorySource = new CitiesHistorySource(citiesDao);
-        cityCardsFromSQL = citiesHistorySource.getCityCardList();
+        citiesHistorySource.getCityCardList(this);
     }
 
     private void setUpBackgroundGif() {
@@ -285,5 +286,10 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks {
                 }
             }
         }
+    }
+
+    @Override
+    public void setCityCardList(List<CityCard> list) {
+        cityCardsFromSQL = list;
     }
 }

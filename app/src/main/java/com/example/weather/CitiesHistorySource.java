@@ -13,11 +13,11 @@ public class CitiesHistorySource {
         this.citiesDao = citiesDao;
     }
 
-    public List<CityCard> getCityCardList() {
-        if (cityCardList == null) {
-            loadCities();
-        }
-        return cityCardList;
+    public void getCityCardList(ICardList fragment) {
+        new Thread(() -> {
+            cityCardList = citiesDao.getAllCityCards();
+            fragment.setCityCardList(cityCardList);
+        }).start();
     }
 
     public void deleteAllCityCards() {
