@@ -1,6 +1,7 @@
 package com.example.weather.activity;
 
 
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -12,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.weather.ConnectionStateMonitor;
 import com.example.weather.R;
 import com.example.weather.event.ChangeThemeBtnClickedEvent;
 import com.google.android.material.navigation.NavigationView;
@@ -30,6 +32,8 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setNavigationUI();
+        ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor();
+        connectionStateMonitor.enable(getApplicationContext());
     }
 
     @Override
@@ -60,8 +64,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
-        EventBus.getBus().register(this);
         super.onStart();
+        EventBus.getBus().register(this);
     }
 
     @Override

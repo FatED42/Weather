@@ -55,6 +55,16 @@
             app:layout_constraintTop_toBottomOf="@id/updateBtn"
             tools:text="31 дек. 1999 Ср. 23.49" />
 
+        <ProgressBar
+            android:id="@+id/progressBarTempFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/todayDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible" />
+
         <TextView
             android:id="@+id/temperatureValue"
             android:layout_width="wrap_content"

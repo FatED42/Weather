@@ -15,10 +15,19 @@ public class CityPreference {
     private static final String KEY = "city";
     private static final String MOSCOW = "Moscow";
     private static final String CITIES_LIST_KEY = "Cities list key";
+    private static final String CITIES_PREFS = "citiesPrefs";
     private SharedPreferences userPreference;
 
     public CityPreference(Activity activity) {
-        userPreference = activity.getPreferences(Activity.MODE_PRIVATE);
+        userPreference = activity.getSharedPreferences(CITIES_PREFS, Activity.MODE_PRIVATE);
+    }
+
+    public CityCard getCityCard(String city) {
+        ArrayList<CityCard> list = getList();
+        for (CityCard c : list) {
+            if (c.cityName.equals(city)) return c;
+        }
+        return null;
     }
 
     public String getCity() {
