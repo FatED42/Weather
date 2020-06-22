@@ -22,11 +22,9 @@ import com.example.weather.dao.ICitiesDao;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 import java.util.Objects;
-
 
 public class DialogBuilderFragment extends DialogFragment implements ICardList {
 
@@ -58,9 +56,7 @@ public class DialogBuilderFragment extends DialogFragment implements ICardList {
                 String text = c.cityName;
                 chip.setText(text);
                 chipGroup.addView(chip);
-                chip.setOnClickListener(v -> {
-                    editText.setText(c.cityName);
-                });
+                chip.setOnClickListener(v -> editText.setText(c.cityName));
             }
         }
         TypedValue outValue = new TypedValue();

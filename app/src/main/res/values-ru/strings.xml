@@ -49,4 +49,6 @@
     <string name="communicate">Связаться</string>
     <string name="about">О разработчике</string>
     <string name="background_gif">Background GIF</string>
+    <string name="cant_find_GPS">не удалось получить данные через GPS</string>
+    <string name="get_city_name_by_gps">Получить ваше местоположение через GPS</string>
 </resources>

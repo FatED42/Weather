@@ -1,10 +1,11 @@
 package com.example.weather.activity;
 
 
-import android.net.ConnectivityManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -14,10 +15,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.weather.ConnectionStateMonitor;
+import com.example.weather.EventBus;
 import com.example.weather.R;
 import com.example.weather.event.ChangeThemeBtnClickedEvent;
 import com.google.android.material.navigation.NavigationView;
-import com.example.weather.EventBus;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends BaseActivity {
@@ -78,5 +79,14 @@ public class MainActivity extends BaseActivity {
     public void onChangeThemeBtnClickedEvent (ChangeThemeBtnClickedEvent event) {
         setDarkTheme(event.isChecked());
         recreate();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            boolean permissionsGranted = (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+            if (permissionsGranted) recreate();
+        }
     }
 }

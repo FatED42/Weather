@@ -1,9 +1,16 @@
 package com.example.weather.fragments;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,9 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -111,6 +120,43 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, ICard
         setSwipeListener();
         setUpBackgroundGif();
         if (savedInstanceState == null) startWeatherFragment(cityPreference.getCity());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            boolean permissionsGranted = (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+            if (permissionsGranted) requireActivity().recreate();
+        }
+    }
+
+    private void getGeo(Context context, Activity activity) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+        } else {
+            LocationManager mLocManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            LocationListener mLocListener = new MyLocationListener();
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setHorizontalAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_FINE);
+            if (mLocManager != null) {
+                mLocManager.requestSingleUpdate(criteria, mLocListener, null);
+            } else {
+                Toast.makeText(context, "Can't find GPS connection", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void initSQLServices() {
@@ -269,6 +315,8 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, ICard
             dialFrag.show(getParentFragmentManager(), "dialog");
             return true;
         }
+        if (id == R.id.gps_btn) getGeo(getContext(), getActivity());
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -291,5 +339,30 @@ public class CitiesFragment extends Fragment implements IAdapterCallbacks, ICard
     @Override
     public void setCityCardList(List<CityCard> list) {
         cityCardsFromSQL = list;
+    }
+
+    final class MyLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            WeatherDataLoader.getCurrentDataByGeo(latitude, longitude, requireContext(), units);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
     }
 }

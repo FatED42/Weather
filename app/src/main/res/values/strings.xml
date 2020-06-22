@@ -66,5 +66,7 @@
     <string name="communicate">Communicate</string>
     <string name="about">About developer</string>
     <string name="background_gif">Background GIF</string>
+    <string name="get_city_name_by_gps">Get city name by GPS</string>
+    <string name="cant_find_GPS">Can\'t connect to GPS</string>
 
 </resources>
